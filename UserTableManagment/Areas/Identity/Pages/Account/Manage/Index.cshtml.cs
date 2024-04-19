@@ -41,11 +41,11 @@ namespace UserTableManagment.Areas.Identity.Pages.Account.Manage
             public string PhoneNumber { get; set; }
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Your first name")]
+            [Display(Name = "First name")]
             public string FirstName { get; set; }
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Your last name")]
+            [Display(Name = "Last name")]
             public string LastName { get; set; }
 
         }

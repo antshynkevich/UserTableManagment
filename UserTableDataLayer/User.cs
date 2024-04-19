@@ -10,5 +10,8 @@ public class User : IdentityUser
     public string LastName { get; set; }
     [PersonalData]
     public DateTime LastLoginTime { get; set; }
-
+    [PersonalData]
+    public DateTime Registration { get; set; }
+    [PersonalData]
+    public bool IsActive { get; set; }
 }
