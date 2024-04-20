@@ -10,6 +10,7 @@ public class UserViewModel
     public DateTime LastLogin { get; set; }
     public DateTime Registration { get; set; }
     public bool IsActive { get; set; }
+    public bool IsSelected { get; set; }
 
     public static UserViewModel MapUserToView(User user)
     {

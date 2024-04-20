@@ -1,0 +1,92 @@
+﻿@model List<UserViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<h1 class="display-6">Users control table</h1>
+<form method="post">
+    <div class="my-3">
+        <button asp-action="BlockSelected" type="submit" class="btn btn-light shadow border border-dark px-4 rounded-1">
+            <i class="fas fa-lock"></i>
+            Block
+        </button>
+        <button asp-action="UnblockSelected" type="submit" class="btn btn-light shadow border border-dark mx-2 px-3 rounded-1">
+            <i class="fas fa-unlock"></i>
+        </button>
+        <button asp-action="DeleteSelected" type="submit" class="btn btn-danger shadow border border-dark px-3 rounded-1">
+            <i class="fas fa-trash mr-5"></i>
+        </button>
+    </div>
+        
+    <table class="table table-light table-striped table-bordered shadow">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">
+                    <input class="form-check-input" type="checkbox" id="selectAll" />
+                </th>
+                <th scope="col" class="col-md-2">User ID</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">E-mail</th>
+                <th scope="col">Registration Date</th>
+                <th scope="col">Last Log In</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <th scope="row">@i</th>
+                    <td>
+                        <div class="form-check">
+                    <input type="checkbox" asp-for="@Model[i].IsSelected" class="form-check-input" />
+                        </div>
+                    </td>
+                    <td>
+                        <small class="text-secondary">@Model[i].Id</small>
+                        <input type="hidden" asp-for="@Model[i].Id" />
+                    </td>
+                    <td>
+                        @Model[i].UserFullName
+                        <input type="hidden" asp-for="@Model[i].UserFullName" />
+                    </td>
+                    <td>
+                        @Model[i].Email
+                        <input type="hidden" asp-for="@Model[i].Email" />
+                    </td>
+                    <td>
+                        @Model[i].Registration
+                        <input type="hidden" asp-for="@Model[i].Registration" />
+                    </td>
+                    <td>
+                        @Model[i].LastLogin
+                        <input type="hidden" asp-for="@Model[i].LastLogin" />
+                    </td>
+                    
+                    <td>
+                        @Model[i].IsActive
+                        <input type="hidden" asp-for="@Model[i].IsActive" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#selectAll").click(function () {
+                $("input[type=checkbox]").prop('checked', $(this).prop('checked'));
+            });
+            $("input[type=checkbox]").click(function () {
+                if (!$(this).prop("checked")) {
+                    $("#selectAll").prop("checked", false);
+                }
+            });
+        });
+    </script>
+}
