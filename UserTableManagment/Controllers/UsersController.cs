@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using UserTableDataLayer;
 using UserTableManagment.Models;
@@ -16,6 +17,7 @@ public class UsersController : Controller
         _signInManager = signInManager;
     }
 
+    [Authorize]
     public IActionResult Index()
     {
         var userViews = _userManager.Users.Select(UserViewModel.MapUserToView).ToList();
@@ -23,23 +25,18 @@ public class UsersController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> DeleteSelectedAsync(IEnumerable<UserViewModel> model)
+    public async Task<IActionResult> DeleteSelectedAsync(IEnumerable<UserViewModel> users)
     {
-        if (!ModelState.IsValid)
-        {
-            return RedirectToAction(nameof(Index));
-        }
-
-        var selectedUsers = model.Where(x => x.IsSelected);
-        var userForLoggingOut = await _userManager.GetUserAsync(User);
-        if (userForLoggingOut != null && selectedUsers.Any(x => x.Id == userForLoggingOut.Id))
+        var selectedUsers = users.Where(x => x.IsSelected);
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser != null && selectedUsers.Any(x => x.Id == currentUser.Id))
         {
             await _signInManager.SignOutAsync();
         }
 
-        foreach (var item in selectedUsers)
+        foreach (var userView in selectedUsers)
         {
-            var user = await _userManager.FindByIdAsync(item.Id);
+            var user = await _userManager.FindByIdAsync(userView.Id);
             if (user != null)
             {
                 await _userManager.DeleteAsync(user);
