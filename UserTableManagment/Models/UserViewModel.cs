@@ -9,7 +9,7 @@ public class UserViewModel
     public string Email { get; set; }
     public DateTime LastLogin { get; set; }
     public DateTime Registration { get; set; }
-    public bool IsActive { get; set; }
+    public string IsActive { get; set; }
     public bool IsSelected { get; set; }
 
     public static UserViewModel MapUserToView(User user)
@@ -18,9 +18,10 @@ public class UserViewModel
         {
             Id = user.Id,
             UserFullName = $"{user.FirstName} {user.LastName}",
-            Email = user.Email,
+            Email = user.Email ?? "",
             LastLogin = user.LastLoginTime,
-            Registration = user.Registration
+            Registration = user.Registration,
+            IsActive = user.IsActive ? "Active" : "Blocked"
         };
     }
 }

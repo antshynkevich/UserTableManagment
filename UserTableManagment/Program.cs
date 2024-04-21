@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using UserTableDataLayer;
+using UserTableManagment.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,10 @@ builder.Services.AddDefaultIdentity<User>(options =>
 }).AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<IAuthorizationHandler, IsNotBlockedUserHandler>();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("ActiveUser", policyBuilder => 
+    policyBuilder.AddRequirements(new IsNotBlockedUser()));
 
 var app = builder.Build();
 

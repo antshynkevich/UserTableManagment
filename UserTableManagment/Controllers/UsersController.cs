@@ -17,7 +17,7 @@ public class UsersController : Controller
         _signInManager = signInManager;
     }
 
-    [Authorize]
+    [Authorize("ActiveUser")]
     public IActionResult Index()
     {
         var userViews = _userManager.Users.Select(UserViewModel.MapUserToView).ToList();
