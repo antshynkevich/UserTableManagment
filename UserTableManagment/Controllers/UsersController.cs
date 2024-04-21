@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using UserTableDataLayer;
 using UserTableManagment.Models;
+using UserTableManagment.Services;
 
 namespace UserTableManagment.Controllers;
 
@@ -10,11 +11,13 @@ public class UsersController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly UserManagmentService _userService;
 
-    public UsersController(UserManager<User> userManager, SignInManager<User> signInManager)
+    public UsersController(UserManager<User> userManager, SignInManager<User> signInManager, UserManagmentService userService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _userService = userService;
     }
 
     [Authorize("ActiveUser")]
@@ -28,11 +31,6 @@ public class UsersController : Controller
     public async Task<IActionResult> DeleteSelectedAsync(IEnumerable<UserViewModel> users)
     {
         var selectedUsers = users.Where(x => x.IsSelected);
-        var currentUser = await _userManager.GetUserAsync(User);
-        if (currentUser != null && selectedUsers.Any(x => x.Id == currentUser.Id))
-        {
-            await _signInManager.SignOutAsync();
-        }
 
         foreach (var userView in selectedUsers)
         {
@@ -43,32 +41,31 @@ public class UsersController : Controller
             }
         }
 
+        if (selectedUsers.Any(x => x.Id == _userManager.GetUserId(User)))
+        {
+            await _signInManager.SignOutAsync();
+        }
+
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
-    public IActionResult BlockSelected(IEnumerable<UserViewModel> model)
+    public async Task<IActionResult> BlockSelectedAsync(IEnumerable<UserViewModel> users)
     {
-        if (!ModelState.IsValid)
+        await _userService.ChangeBlockingStatus(users, _userManager, false);
+        if (users.Where(x => x.IsSelected).Any(x => x.Id == _userManager.GetUserId(User)))
         {
-            return RedirectToAction(nameof(Index));
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
 
-        // TODO: add code
-        throw new NotImplementedException();
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
-    public IActionResult UnblockSelected(IEnumerable<UserViewModel> model)
+    public async Task<IActionResult> UnblockSelectedAsync(IEnumerable<UserViewModel> users)
     {
-        if (!ModelState.IsValid)
-        {
-            return RedirectToAction(nameof(Index));
-        }
-
-        // TODO: add code
-        throw new NotImplementedException();
+        await _userService.ChangeBlockingStatus(users, _userManager, true);
         return RedirectToAction(nameof(Index));
     }
 }
