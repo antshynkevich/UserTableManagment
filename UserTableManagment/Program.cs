@@ -26,7 +26,7 @@ builder.Services.AddScoped<IAuthorizationHandler, IsNotBlockedUserHandler>();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("ActiveUser", policyBuilder => 
     policyBuilder.AddRequirements(new IsNotBlockedUser()));
-builder.Services.AddSingleton<UserManagmentService>();
+builder.Services.AddScoped<UserTableService>();
 
 var app = builder.Build();
 

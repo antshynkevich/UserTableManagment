@@ -11,13 +11,13 @@ public class UsersController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-    private readonly UserManagmentService _userService;
+    private readonly UserTableService _userService;
 
-    public UsersController(UserManager<User> userManager, SignInManager<User> signInManager, UserManagmentService userService)
+    public UsersController(UserManager<User> userManager, SignInManager<User> signInManager, UserTableService userTableService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _userService = userService;
+        _userService = userTableService;
     }
 
     [Authorize("ActiveUser")]
@@ -52,7 +52,7 @@ public class UsersController : Controller
     [HttpPost]
     public async Task<IActionResult> BlockSelectedAsync(IEnumerable<UserViewModel> users)
     {
-        await _userService.ChangeBlockingStatus(users, _userManager, false);
+        await _userService.ChangeBlockingStatusAsync(users, false);
         if (users.Where(x => x.IsSelected).Any(x => x.Id == _userManager.GetUserId(User)))
         {
             await _signInManager.SignOutAsync();
@@ -65,7 +65,7 @@ public class UsersController : Controller
     [HttpPost]
     public async Task<IActionResult> UnblockSelectedAsync(IEnumerable<UserViewModel> users)
     {
-        await _userService.ChangeBlockingStatus(users, _userManager, true);
+        await _userService.ChangeBlockingStatusAsync(users, true);
         return RedirectToAction(nameof(Index));
     }
 }
