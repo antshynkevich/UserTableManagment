@@ -1,0 +1,11 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Access denied";
+}
+
+<header>
+    <h1 class="text-danger mb-3">@ViewData["Title"]</h1>
+    <p class="text-danger my-1">You do not have access to this resource because you've been blocked by the administration.</p>
+    <p>You can <a asp-page="Register">create a new account</a>, but please be polite and follow the <a href="https://youtu.be/dQw4w9WgXcQ?si=nxr2k2lsBXlGNcY6">app user rules</a> next time.</p>
+</header>
